@@ -26,7 +26,7 @@ window.fbAsyncInit = function() {
             FB.api( '/me?fields=name,picture', function(response){
               // 把資訊插入到html裡，並顯示出來
               $('.user-name').text(response.name);
-              $('user-photo').attr('src',response.picture.data.url);
+              $('.user-photo').attr('src',response.picture.data.url);
               $('#user').removeClass('hide');
               // ---------------
               // 讀取 like 的列表，並儲存到 likes, 以及下一組資料的連結到 next
