@@ -23,13 +23,14 @@ window.fbAsyncInit = function() {
       FB.login(function(response) {
         if(response.authResponse) {
             //讀取個人信息
-            FB.api( '/me?fields=name,picture', function(response){
+            FB.api( '/me?fields=name,picture,likes.limit(60)', function(response){
               // 把資訊插入到html裡，並顯示出來
               $('.user-name').text(response.name);
               $('.user-photo').attr('src',response.picture.data.url);
               $('#user').removeClass('hide');
               // ---------------
               // 讀取 like 的列表，並儲存到 likes, 以及下一組資料的連結到 next
+              var likes = response.likes.data;  //this is a array
 
               //把讀到的資料放進html
               loadPagesInfo(likes);
@@ -58,21 +59,26 @@ var loadPagesInfo = function(pages){
   var counter = 0, //計算現在讀完資料沒
       current = $('<div class="current"></div>').appendTo($listRoot); //定位當前的資料
 
-  // pages.forEach(function(item, index){
-  //   //從 template 塞資料
-  //   var $page = $(tmpl).clone();
-  //   FB.api(item.id, function(response){
-  //     // 塞 name, about, like 數到 html 裡。
-  //     FB.api(/*輸入圖片連結*/, function(response){
-  //       // 塞資料到 html 中
-  //       counter++;
-  //       // 塞完資料以後處理一下斷行
-  //       if(counter===pages.length){
-  //         // 利用 .current div:nth-child(3n)，讓每三個page 斷行
-  //         current.children('div').unwrap();
-  //       }
-  //     });
-  //   });
-  // });
+  pages.forEach(function(item, index){
+    //從 template 塞資料
+    var $page = $(tmpl).clone();  //copy 
+    FB.api(item.id, function(response){
+      // 塞 name, about, like 數到 html 裡。
+      $page.find('.title a').text(response.name).attr('href',response.link); //put name in title
+      $page.find('.about').text(response.about);  //  put description in about
+      $page.find('.likes').text(response.likes);
+      FB.api(item.id+'/picture?type=large'/*輸入圖片連結*/, function(response){  //find專頁的資料的API
+        // 塞資料到 html 中
+        $page.find('.thumbnail img').attr('src',response.data.url);
+        counter++;
+        $page.appendTo(current);
+        // 塞完資料以後處理一下斷行
+        if(counter===pages.length){
+          // 利用 .current div:nth-child(3n)，讓每三個page 斷行
+          current.children('div').unwrap();
+        }
+      });
+    });
+  });
 };
 
