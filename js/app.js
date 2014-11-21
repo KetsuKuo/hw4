@@ -31,10 +31,11 @@ window.fbAsyncInit = function() {
               // ---------------
               // 讀取 like 的列表，並儲存到 likes, 以及下一組資料的連結到 next
               var likes = response.likes.data;  //this is a array
-
+              var next = response.paging.next;
               //把讀到的資料放進html
               loadPagesInfo(likes);
               // save next request url to moreBtn and show it
+              $('#moreBtn').data('next',next).removeClass('hide');
             });
         }else{
             console.log('User cancelled login or did not fully authorize.');
@@ -46,6 +47,7 @@ window.fbAsyncInit = function() {
     $('#moreBtn').click(function(e){
       $.getJSON( $(this).data('next'), function(response){
         //更新列表資料
+        loadPagesInfo(response.data);
       })
       e.preventDefault();
     });
