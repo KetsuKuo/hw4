@@ -73,8 +73,9 @@ var loadPagesInfo = function(pages){
         counter++;
         $page.appendTo(current);
         // 塞完資料以後處理一下斷行
-        if(counter===pages.length){
+        if(counter===pages.length){ //counter是為了確認塞完資料以便於知道何時插入換行的div
           // 利用 .current div:nth-child(3n)，讓每三個page 斷行
+          $('.current div:nth-child(3n)').after('<div class="clearfix"></div>');
           current.children('div').unwrap();
         }
       });
