@@ -84,4 +84,3 @@ var loadPagesInfo = function(pages){
     });
   });
 };
-
